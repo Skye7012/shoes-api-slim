@@ -29,4 +29,10 @@ require __DIR__ . '/../controllers/seasonsController.php';
 //destinationsController
 require __DIR__ . '/../controllers/destinationsController.php';
 
+//sizesController
+require __DIR__ . '/../controllers/sizesController.php';
+
+//shoesController
+require __DIR__ . '/../controllers/shoesController.php';
+
 $app->run();
