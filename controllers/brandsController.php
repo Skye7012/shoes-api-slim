@@ -27,18 +27,24 @@ $app->post('/brands', function (Request $request, Response $response) {
 });
 
 $app->put('/brands/{id}', function (Request $request, Response $response, $args) {
-	// $body = json_decode($request->getBody());
-	// $name = $body->name;
+	$body = json_decode($request->getBody());
+	$name = $body->name;
 
-	// $conn = DB::connect();
-	// $res = pg_update($conn,'public.brands',['name' => $name], ['id' => $args['id']]);
-	// $res = boolval($res);
+	$conn = DB::connect();
+	$res = pg_update($conn,'public.brands',['name' => $name], ['id' => $args['id']]);
+	$res = boolval($res);
 
-	// $response->getBody()->write(json_encode($res));
-	// return $response
-	// 	->withHeader('Content-Type', 'application/json');
+	$response->getBody()->write(json_encode($res));
+	return $response
+		->withHeader('Content-Type', 'application/json');
+});
 
-	$response->getBody()->write(json_encode("put"));
+$app->delete('/brands/{id}', function (Request $request, Response $response, $args) {
+	$conn = DB::connect();
+	$res = pg_delete($conn,'public.brands', ['id' => $args['id']]);
+	$res = boolval($res);
+
+	$response->getBody()->write(json_encode($res));
 	return $response
 		->withHeader('Content-Type', 'application/json');
 });
