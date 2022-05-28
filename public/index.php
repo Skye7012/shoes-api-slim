@@ -8,10 +8,6 @@ require __DIR__ . '/../config/db.php';
 
 $app = AppFactory::create();
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-
 $app->options('/{routes:.+}', function ($request, $response, $args) {
 	return $response;
 });
@@ -24,13 +20,13 @@ $app->add(function ($request, $handler) {
 			->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
-$app->get('/hello/{name}', function (Request $request, Response $response, $args) {
-	$name = $args['name'];
-	$response->getBody()->write("Hello $name!");
-	return $response;
-});
-
-//Brand controller
+//brandsController
 require __DIR__ . '/../controllers/brandsController.php';
+
+//seasonsController
+require __DIR__ . '/../controllers/seasonsController.php';
+
+//destinationsController
+require __DIR__ . '/../controllers/destinationsController.php';
 
 $app->run();

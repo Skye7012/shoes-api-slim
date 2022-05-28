@@ -7,8 +7,9 @@ $app->get('/brands', function (Request $request, Response $response) {
 	$conn = DB::connect();
 	$query = pg_query($conn, $sql);
 	$brands = pg_fetch_all($query);
+	$res = ['items' => $brands, 'totalCount' => count($brands)];
 
-	$response->getBody()->write(json_encode($brands));
+	$response->getBody()->write(json_encode($res));
 	return $response
 		->withHeader('Content-Type', 'application/json');
 });
