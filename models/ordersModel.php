@@ -18,7 +18,22 @@ WHERE o.user_id = $userId
 		$items = array();
 
 		foreach ($orders as $order) {
-			$items[$order['id']][] = $order;
+			$orderId = $order['id'];
+			$items[$orderId]['id'] = $orderId;
+			$items[$orderId]['orderDate'] = $order['order_date'];
+			$items[$orderId]['addres'] = $order['addres'];
+			$items[$orderId]['sum'] = $order['sum'];
+			$items[$orderId]['count'] = $order['count'];
+
+			$orderItemId = $order['order_item_id'];
+			$items[$orderId]['orderItems'][$orderItemId]['id'] = $orderItemId;
+			$items[$orderId]['orderItems'][$orderItemId]['ruSize'] = $order['ru_size'];
+
+			$shoeId = $order['shoe_id'];
+			$items[$orderId]['orderItems'][$orderItemId]['shoe'][$shoeId]['id'] = $shoeId;
+			$items[$orderId]['orderItems'][$orderItemId]['shoe'][$shoeId]['name'] = $order['shoe_name'];
+			$items[$orderId]['orderItems'][$orderItemId]['shoe'][$shoeId]['image'] = $order['shoe_image'];
+			$items[$orderId]['orderItems'][$orderItemId]['shoe'][$shoeId]['price'] = $order['shoe_price'];
 		}
 
 		var_dump($items);

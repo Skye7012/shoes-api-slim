@@ -8,12 +8,14 @@ require_once __DIR__ . '/../service/userService.php';
 $app->get('/orders', function (Request $request, Response $response) {
 	$token = $request->getHeader('Authorization')[0];
 	$conn = DB::connect();
-	$query = pg_query($conn, ordersModel::getSql($token));
+	$userId = userService::getUserId($token);
+
+	$query = pg_query($conn, ordersModel::getSql($userId));
 	if(!$query)
 		throw new Exception('Неправильный токен');
 
 	$orders = pg_fetch_all($query);
-	var_dump(ordersModel::getSql($token));
+	ordersModel::mapOrdersResponse($orders);
 
 	// $response->getBody()->write(json_encode($order));
 	// return $response
