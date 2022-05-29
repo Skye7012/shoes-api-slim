@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../config/db.php";
-require_once __DIR__ . "/../config/cipher.php";
+require_once __DIR__ . "/../config/appSettings.php";
 
 class userService {
 	public static function getUserId($token) {
@@ -25,7 +25,7 @@ class userService {
 	}
 
 	private static function getEncryptKey() {
-		return "6d468a6dd8cee6a032cad35dc2d15822e6e89579a1249e70585f0408f7560c76c999fa579ea786ab";
+		return appSettings::getEncryptKey();
 	}
 	private static function getCiphering() {
 		return "AES-192-CBC";

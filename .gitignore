@@ -1,2 +1,3 @@
 ﻿vendor
 config/db.php
+config/appSettings.php

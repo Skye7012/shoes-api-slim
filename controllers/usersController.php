@@ -6,11 +6,8 @@ require_once __DIR__ . "/../service/userService.php";
 
 $app->get('/users', function (Request $request, Response $response) {
 	$token = $request->getHeader('Authorization')[0];
-	var_dump($token);
 	$token = userService::readToken($token);
-	var_dump($token);
 	$sql = "SELECT login, name, fname, phone FROM users WHERE login = '$token'";
-	//var_dump($sql);
 	$conn = DB::connect();
 	$query = pg_query($conn, $sql);
 	if(!$query)

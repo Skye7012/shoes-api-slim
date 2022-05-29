@@ -7,6 +7,7 @@ require_once __DIR__ . '/../service/userService.php';
 
 $app->get('/orders', function (Request $request, Response $response) {
 	$token = $request->getHeader('Authorization')[0];
+	$token = userService::readToken($token);
 	$conn = DB::connect();
 	$userId = userService::getUserId($token);
 
@@ -25,6 +26,7 @@ $app->get('/orders', function (Request $request, Response $response) {
 
 $app->post('/orders', function (Request $request, Response $response) {
 	$token = $request->getHeader('Authorization')[0];
+	$token = userService::readToken($token);
 	$body = json_decode($request->getBody());
 	
 	$conn = DB::connect();
