@@ -2,8 +2,13 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+require_once __DIR__ . "/../service/userService.php";
+
 $app->get('/users', function (Request $request, Response $response) {
 	$token = $request->getHeader('Authorization')[0];
+	var_dump($token);
+	$token = userService::readToken($token);
+	var_dump($token);
 	$sql = "SELECT login, name, fname, phone FROM users WHERE login = '$token'";
 	//var_dump($sql);
 	$conn = DB::connect();
@@ -56,14 +61,17 @@ $app->post('/users/login', function (Request $request, Response $response) {
 	$user = $user[0];
 	if(hash('SHA512', $password) != $user['password'])
 		throw new Exception('Неправильный пароль');
+
+	$token = userService::createToken($user['login']);
 	
-	$response->getBody()->write(json_encode($user['login']));
+	$response->getBody()->write(json_encode($token));
 	return $response
 		->withHeader('Content-Type', 'application/json');
 });
 
 $app->put('/users', function (Request $request, Response $response, $args) {
 	$token = $request->getHeader('Authorization')[0];
+	$token = userService::readToken($token);
 	$body = json_decode($request->getBody());
 
 	$name = $body->name;
@@ -89,6 +97,7 @@ $app->put('/users', function (Request $request, Response $response, $args) {
 $app->delete('/users', function (Request $request, Response $response, $args) {
 	$conn = DB::connect();
 	$token = $request->getHeader('Authorization')[0];
+	$token = userService::readToken($token);
 	$res = pg_delete($conn,'public.users', ['login' => $token], PGSQL_DML_STRING);
 	//var_dump($res);
 	$res = boolval($res);
