@@ -29,14 +29,18 @@ WHERE o.user_id = $userId
 			$items[$orderId]['orderItems'][$orderItemId]['id'] = $orderItemId;
 			$items[$orderId]['orderItems'][$orderItemId]['ruSize'] = $order['ru_size'];
 
-			$shoeId = $order['shoe_id'];
-			$items[$orderId]['orderItems'][$orderItemId]['shoe'][$shoeId]['id'] = $shoeId;
-			$items[$orderId]['orderItems'][$orderItemId]['shoe'][$shoeId]['name'] = $order['shoe_name'];
-			$items[$orderId]['orderItems'][$orderItemId]['shoe'][$shoeId]['image'] = $order['shoe_image'];
-			$items[$orderId]['orderItems'][$orderItemId]['shoe'][$shoeId]['price'] = $order['shoe_price'];
+			$items[$orderId]['orderItems'][$orderItemId]['shoe']['id'] = $order['shoe_id'];
+			$items[$orderId]['orderItems'][$orderItemId]['shoe']['name'] = $order['shoe_name'];
+			$items[$orderId]['orderItems'][$orderItemId]['shoe']['image'] = $order['shoe_image'];
+			$items[$orderId]['orderItems'][$orderItemId]['shoe']['price'] = $order['shoe_price'];
 		}
 
-		var_dump($items);
+		$items = array_values($items);
+		foreach($items as &$item) {
+			$item['orderItems'] = array_values($item['orderItems']);
+		}
+		
+		return $items;
 	}
 }
 

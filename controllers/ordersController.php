@@ -15,11 +15,12 @@ $app->get('/orders', function (Request $request, Response $response) {
 		throw new Exception('Неправильный токен');
 
 	$orders = pg_fetch_all($query);
-	ordersModel::mapOrdersResponse($orders);
+	$orders = ordersModel::mapOrdersResponse($orders);
+	$res = ['totalCount' => count($orders), 'items' => $orders];
 
-	// $response->getBody()->write(json_encode($order));
-	// return $response
-	// 	->withHeader('Content-Type', 'application/json');
+	$response->getBody()->write(json_encode($res));
+	return $response
+		->withHeader('Content-Type', 'application/json');
 });
 
 $app->post('/orders', function (Request $request, Response $response) {
