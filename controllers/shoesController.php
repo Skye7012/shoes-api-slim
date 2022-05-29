@@ -11,8 +11,10 @@ $app->get('/shoes', function (Request $request, Response $response) {
 	$sql = shoesModel::getSelectQuery($params);
 	
 	$query = pg_query($conn, $sql);
+	$countQuery = pg_query($conn, shoesModel::getCountQuery());
 	$shoes = pg_fetch_all($query);
-	$count = pg_num_rows($query);
+
+	$count = pg_num_rows($countQuery);
 	$shoes = shoesModel::mapShoesResponse($shoes);
 	$res = ['totalCount' => $count, 'items' => $shoes];
 
