@@ -89,9 +89,8 @@ $app->put('/users', function (Request $request, Response $response, $args) {
 $app->delete('/users', function (Request $request, Response $response, $args) {
 	$conn = DB::connect();
 	$token = $request->getHeader('Authorization')[0];
-	$sql = "DELETE FROM public.users WHERE login='$token'";
-	$res = pg_query($conn, $sql);
-	// var_dump($res);
+	$res = pg_delete($conn,'public.users', ['login' => $token], PGSQL_DML_STRING);
+	var_dump($res);
 	$res = boolval($res);
 
 	$response->getBody()->write(json_encode($res));
