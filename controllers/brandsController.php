@@ -49,3 +49,5 @@ $app->delete('/brands/{id}', function (Request $request, Response $response, $ar
 	return $response
 		->withHeader('Content-Type', 'application/json');
 });
+
+?>

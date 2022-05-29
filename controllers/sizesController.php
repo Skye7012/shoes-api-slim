@@ -12,3 +12,5 @@ $app->get('/sizes', function (Request $request, Response $response) {
 	return $response
 		->withHeader('Content-Type', 'application/json');
 });
+
+?>

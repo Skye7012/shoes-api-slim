@@ -95,3 +95,5 @@ $app->delete('/users', function (Request $request, Response $response, $args) {
 	return $response
 		->withHeader('Content-Type', 'application/json');
 });
+
+?>

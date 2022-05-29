@@ -33,7 +33,7 @@ $pagination
 
 	public static function getSelectByIdsQuery($params) {
 		$ids = $params['ids'];
-		$filter = "";
+		$filter = "WHERE FALSE";
 		if($ids)
 			$filter = "WHERE sh.id IN (". implode(',',$ids) .")";
 		return self::getSql($filter);

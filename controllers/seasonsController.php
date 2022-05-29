@@ -13,3 +13,5 @@ $app->get('/seasons', function (Request $request, Response $response) {
 	return $response
 		->withHeader('Content-Type', 'application/json');
 });
+
+?>
