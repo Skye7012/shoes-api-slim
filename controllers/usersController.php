@@ -61,12 +61,23 @@ $app->post('/users/login', function (Request $request, Response $response) {
 		->withHeader('Content-Type', 'application/json');
 });
 
-$app->put('/users/{id}', function (Request $request, Response $response, $args) {
+$app->put('/users', function (Request $request, Response $response, $args) {
+	$token = $request->getHeader('Authorization')[0];
 	$body = json_decode($request->getBody());
+
 	$name = $body->name;
+	$fname = $body->fname;
+	$phone = $body->phone;
 
 	$conn = DB::connect();
-	$res = pg_update($conn,'public.users',['name' => $name], ['id' => $args['id']]);
+
+	$user = pg_select($conn,'public.users', ['login' => $token]);
+	if(!$user)
+		throw new Exception('Пользователя с таким логином не существует');
+	
+	$user = $user[0];
+	$updatedUser= ['name' => $name, 'fname' => $fname, 'phone' => $phone];
+	$res = pg_update($conn,'public.users',$updatedUser, ['id' => $user['id']]);
 	$res = boolval($res);
 
 	$response->getBody()->write(json_encode($res));
