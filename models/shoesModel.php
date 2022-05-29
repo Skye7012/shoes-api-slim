@@ -41,11 +41,15 @@ $pagination
 		$sizeFilters = $params['SizeFilters'];
 		$sizeFilters = self::getInSql($sizeFilters);
 
+		$searchQuery = $params['SearchQuery'];
+		$searchQuery = self::getSearchSql($searchQuery);
+
 		$res = 
 "WHERE b.id $brandFilters
 	AND d.id $destinationFilters
 	AND s.id $seasonFilters
 	AND sz.ru_size $sizeFilters
+	AND $searchQuery
 ";
 		return $res;
 	}
@@ -55,6 +59,13 @@ $pagination
 			return "IN (" . implode(',', $param) . ")";
 		else
 			return "IS NOT NULL";
+	}
+
+	private static function getSearchSql($searchQuery) {
+		if($searchQuery)
+			return "lower(sh.name) LIKE lower('%$searchQuery%')";
+		else
+			return "TRUE";
 	}
 
 	private static function getPaginationSql($params) {
