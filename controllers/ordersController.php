@@ -35,40 +35,35 @@ $app->post('/orders', function (Request $request, Response $response) {
 	$orderCount = $body->orderCount;
 	$orderDate = date("Y-m-d H:i:s");
 	$orderItems = $body->orderItems;
+	$orderItems = json_decode(json_encode($orderItems), true);
 
 	$sizes = pg_query($conn, 'select * from public.sizes');
 	$sizes = pg_fetch_all($sizes);
 	$sizesDict = array_column($sizes, 'id','ru_size'); 
 
-	$order = ['order_date' => $orderDate,
-		'sum' => $orderSum,
-		'count' => $orderCount,
-		'user_id' => $userId,
-		'addres' => $addres
-	];
-	$res = pg_insert($conn,'public.orders', $order);
-	var_dump($res);
-	//$res = boolval($res);
+	$res = pg_query($conn, "INSERT INTO public.orders (order_date,sum,count,user_id,addres)
+		VALUES ('$orderDate',$orderSum,$orderCount,$userId,'$addres')
+		returning id");
+	$res = pg_fetch_array($res);
+	if(!boolval($res))
+		throw new Exception('Не удалось создать заказ');
+	
+	$orderId = intval($res['id']);
+	
+	foreach($orderItems as $orderItem) {
+		$orderItem = ['order_id' => $orderId,
+			'shoe_id' => $orderItem['shoeId'],
+			'size_id' => $sizesDict[$orderItem['ruSize']]
+		];
 
-	// foreach($orderItems as $orderItem) {
-	// 	$res = pg_insert($conn,'public.order_items', ['order_id']);
-	// 	$res = boolval($res);
-	// }
+		$res = pg_insert($conn,'public.order_items', $orderItem);
+		if(!boolval($res))
+			throw new Exception('Не удалось создать пункт заказа');
+	}
 
-	// $order = ['login' => $login,
-	// 	'password' => hash('SHA512', $password),
-	// 	'name' => $name,
-	// 	'fname' => $fname,
-	// 	'phone' => $phone
-	// ];
-
-	// $conn = DB::connect();
-	// $res = pg_insert($conn,'public.orders', $order);
-	// $res = boolval($res);
-
-	// $response->getBody()->write(json_encode($res));
-	// return $response
-	// 	->withHeader('Content-Type', 'application/json');
+	$response->getBody()->write(json_encode($orderId));
+	return $response
+		->withHeader('Content-Type', 'application/json');
 });
 
 ?>
