@@ -1,7 +1,8 @@
 <?php
 
 class shoesModel {
-	private static $selectQuery =
+	private static function getSql($filter = "", $pagination = "") {
+	return
 "SELECT sh.id, sh.name, sh.image, sh.price, 
 	b.id as brandId, b.name as brandName,
 	d.id as destinationId, d.name as destinationName,
@@ -13,46 +14,59 @@ FROM public.shoes sh
 	JOIN public.seasons s on sh.season_id  = s.id
 	JOIN public.shoes_sizes ss ON sh.id = ss.shoes_id 
 	JOIN public.sizes sz ON sz.id = ss.sizes_id 
-GROUP BY sh.id, b.id, d.id, s.id";
+$filter
+GROUP BY sh.id, b.id, d.id, s.id
+$pagination
+";
+	}
 
 	public static function getSelectQuery($params) {
+		$filter = self::getFilterSql($params);
+		$pagination = self::getPaginationSql($params);
+		return self::getSql($filter, $pagination);
+	}
+
+	public static function getCountQuery($params) {
+		$filter = self::getFilterSql($params);
+		return self::getSql($filter);
+	}
+
+	private static function getFilterSql($params) {
+		$brandFilters = $params['BrandFilters'];
+		$brandFilters = self::getInSql($brandFilters);
+		$destinationFilters = $params['DestinationFilters'];
+		$destinationFilters = self::getInSql($destinationFilters);
+		$seasonFilters = $params['SeasonFilters'];
+		$seasonFilters = self::getInSql($seasonFilters);
+		$sizeFilters = $params['SizeFilters'];
+		$sizeFilters = self::getInSql($sizeFilters);
+
+		$res = 
+"WHERE b.id $brandFilters
+	AND d.id $destinationFilters
+	AND s.id $seasonFilters
+	AND sz.ru_size $sizeFilters
+";
+		return $res;
+	}
+
+	private static function getInSql($param) {
+		if($param)
+			return "IN (" . implode(',', $param) . ")";
+		else
+			return "IS NOT NULL";
+	}
+
+	private static function getPaginationSql($params) {
 		$page = $params['Page'];
 		$limit = $params['Limit'];
 		$offset = (intval($page) - 1) * intval($limit);
 		$offset = "OFFSET $offset";
 		$limit = "LIMIT $limit";
-		$selectQuery = self::$selectQuery;
 		
 		return 
-"$selectQuery
-$limit
+"$limit
 $offset";
-	}
-
-	public static function getCountQuery() {
-		$selectQuery = self::$selectQuery;
-		
-		return 
-"$selectQuery
-";
-	}
-
-	public static function getFilterSql($params) {
-		$brandFilters = $params['BrandFilters'];
-		$destinationFilters = $params['DestinationFilters'];
-		$seasonFilters = $params['SeasonFilters'];
-		$sizeFilters = $params['SizeFilters'];
-
-		$res = "";
-
-	}
-
-	private function whereStateQuery($state, $query) {
-		if(strpos($state, "WHERE") === false)
-			$state = "WHERE " . $query . "\n";
-		else 
-			$state .= "AND " . $query . "\n";
-		return $state;
 	}
 
 	public static function mapShoesResponse($shoes) {
