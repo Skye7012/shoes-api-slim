@@ -85,9 +85,10 @@ $app->put('/users', function (Request $request, Response $response, $args) {
 		->withHeader('Content-Type', 'application/json');
 });
 
-$app->delete('/users/{id}', function (Request $request, Response $response, $args) {
+$app->delete('/users', function (Request $request, Response $response, $args) {
 	$conn = DB::connect();
-	$res = pg_delete($conn,'public.users', ['id' => $args['id']]);
+	$token = $request->getHeader('Authorization')[0];
+	$res = pg_delete($conn,'public.users', ['login' => $token]);
 	$res = boolval($res);
 
 	$response->getBody()->write(json_encode($res));
