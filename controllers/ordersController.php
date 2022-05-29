@@ -2,15 +2,18 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+require_once __DIR__ . '/../models/ordersModel.php';
+require_once __DIR__ . '/../service/userService.php';
+
 $app->get('/orders', function (Request $request, Response $response) {
 	$token = $request->getHeader('Authorization')[0];
-	$sql = "SELECT id FROM users WHERE login = '$token'";
 	$conn = DB::connect();
-	$query = pg_query($conn, $sql);
+	$query = pg_query($conn, ordersModel::getSql($token));
 	if(!$query)
 		throw new Exception('Неправильный токен');
 
-	$user = pg_fetch_assoc($query);
+	$orders = pg_fetch_all($query);
+	var_dump(ordersModel::getSql($token));
 
 	// $response->getBody()->write(json_encode($order));
 	// return $response
@@ -20,15 +23,10 @@ $app->get('/orders', function (Request $request, Response $response) {
 $app->post('/orders', function (Request $request, Response $response) {
 	$token = $request->getHeader('Authorization')[0];
 	$body = json_decode($request->getBody());
-
-	$sql = "SELECT id FROM users WHERE login = '$token'";
+	
 	$conn = DB::connect();
-	$query = pg_query($conn, $sql);
-	if(!$query)
-		throw new Exception('Неправильный токен');
-
-	$user = pg_fetch_assoc($query);
-	$userId = $user['id'];
+	
+	$userId = userService::getUserId($token);
 
 	$addres = $body->addres;
 	$orderSum = $body->orderSum;
