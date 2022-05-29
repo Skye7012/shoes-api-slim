@@ -38,27 +38,17 @@ $app->post('/orders', function (Request $request, Response $response) {
 
 	$sizes = pg_query($conn, 'select * from public.sizes');
 	$sizes = pg_fetch_all($sizes);
-	// var_dump($sizes);
-	// $newSizes = array();
-	// $mapSize = function($size) {
-	// 	$newSizes[$size['id']] = $size['ru_size'];
-	// };
-	// array_map($mapSize, $sizes);
-	// $size = array_search(['ru_size' => 40], $sizes);
-	// var_dump($newSizes);
-	$ns = array();
+	$sizesDict = array_column($sizes, 'id','ru_size'); 
 
-	array_walk($sizes, function ($item, $key) {
-		$key = $item['ru_size'];
-		$item = $item['id'];
-		$ns[$key] = $item;
-		var_dump($ns);
-	});
-
-	var_dump($ns);
-
-	// $res = pg_insert($conn,'public.orders', ['order_id']);
-	// $res = boolval($res);
+	$order = ['order_date' => $orderDate,
+		'sum' => $orderSum,
+		'count' => $orderCount,
+		'user_id' => $userId,
+		'addres' => $addres
+	];
+	$res = pg_insert($conn,'public.orders', $order);
+	var_dump($res);
+	//$res = boolval($res);
 
 	// foreach($orderItems as $orderItem) {
 	// 	$res = pg_insert($conn,'public.order_items', ['order_id']);
