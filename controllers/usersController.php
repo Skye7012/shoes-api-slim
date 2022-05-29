@@ -5,7 +5,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $app->get('/users', function (Request $request, Response $response) {
 	$token = $request->getHeader('Authorization')[0];
 	$sql = "SELECT login, name, fname, phone FROM users WHERE login = '$token'";
-	var_dump($sql);
+	//var_dump($sql);
 	$conn = DB::connect();
 	$query = pg_query($conn, $sql);
 	if(!$query)
@@ -90,7 +90,7 @@ $app->delete('/users', function (Request $request, Response $response, $args) {
 	$conn = DB::connect();
 	$token = $request->getHeader('Authorization')[0];
 	$res = pg_delete($conn,'public.users', ['login' => $token], PGSQL_DML_STRING);
-	var_dump($res);
+	//var_dump($res);
 	$res = boolval($res);
 
 	$response->getBody()->write(json_encode($res));
