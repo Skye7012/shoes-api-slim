@@ -35,4 +35,7 @@ require __DIR__ . '/../controllers/sizesController.php';
 //shoesController
 require __DIR__ . '/../controllers/shoesController.php';
 
+//usersController
+require __DIR__ . '/../controllers/usersController.php';
+
 $app->run();
