@@ -1,7 +1,7 @@
 <?php
 
 class shoesModel {
-	private static function getSql($filter = "", $pagination = "") {
+	private static function getSql($filter = "", $sort = "", $pagination = "") {
 	return
 "SELECT sh.id, sh.name, sh.image, sh.price, 
 	b.id as brandId, b.name as brandName,
@@ -16,14 +16,16 @@ FROM public.shoes sh
 	JOIN public.sizes sz ON sz.id = ss.sizes_id 
 $filter
 GROUP BY sh.id, b.id, d.id, s.id
+$sort
 $pagination
 ";
 	}
 
 	public static function getSelectQuery($params) {
 		$filter = self::getFilterSql($params);
+		$sort = self::getSortSql($params);
 		$pagination = self::getPaginationSql($params);
-		return self::getSql($filter, $pagination);
+		return self::getSql($filter, $sort, $pagination);
 	}
 
 	public static function getCountQuery($params) {
@@ -74,6 +76,19 @@ $pagination
 			return "lower(sh.name) LIKE lower('%$searchQuery%')";
 		else
 			return "TRUE";
+	}
+
+	private static function getSortSql($params) {
+		$orderBy = $params['OrderBy'];
+		$isAscending = $params['IsAscending'];
+		$isAscending = $isAscending ? json_decode($isAscending) : true;
+		$isAscending = $isAscending ? "ASC" : "DESC"; 
+		if($orderBy === "Name")
+			$orderBy = "sh.name";
+		else if ($orderBy === "Price")
+			$orderBy = "sh.price";
+
+		return "ORDER BY $orderBy $isAscending";
 	}
 
 	private static function getPaginationSql($params) {
