@@ -22,3 +22,20 @@ $app->get('/shoes', function (Request $request, Response $response) {
 	return $response
 		->withHeader('Content-Type', 'application/json');
 });
+
+$app->get('/shoes/getByIds', function (Request $request, Response $response) {
+	$conn = DB::connect();
+
+	$params = $request->getQueryParams();
+	$sql = shoesModel::getSelectByIdsQuery($params);
+	
+	$query = pg_query($conn, $sql);
+	$shoes = pg_fetch_all($query);
+
+	$shoes = shoesModel::mapShoesResponse($shoes);
+	$res = ['totalCount' => count($shoes), 'items' => $shoes];
+
+	$response->getBody()->write(json_encode($res));
+	return $response
+		->withHeader('Content-Type', 'application/json');
+});

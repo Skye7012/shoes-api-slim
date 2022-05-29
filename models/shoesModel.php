@@ -31,6 +31,14 @@ $pagination
 		return self::getSql($filter);
 	}
 
+	public static function getSelectByIdsQuery($params) {
+		$ids = $params['ids'];
+		$filter = "";
+		if($ids)
+			$filter = "WHERE sh.id IN (". implode(',',$ids) .")";
+		return self::getSql($filter);
+	}
+
 	private static function getFilterSql($params) {
 		$brandFilters = $params['BrandFilters'];
 		$brandFilters = self::getInSql($brandFilters);
