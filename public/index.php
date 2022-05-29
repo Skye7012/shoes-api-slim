@@ -1,8 +1,8 @@
 <?php
 use Slim\Factory\AppFactory;
 
-require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../config/db.php';
 
 $app = AppFactory::create();
 
@@ -19,25 +19,25 @@ $app->add(function ($request, $handler) {
 });
 
 //brandsController
-require __DIR__ . '/../controllers/brandsController.php';
+require_once __DIR__ . '/../controllers/brandsController.php';
 
 //seasonsController
-require __DIR__ . '/../controllers/seasonsController.php';
+require_once __DIR__ . '/../controllers/seasonsController.php';
 
 //destinationsController
-require __DIR__ . '/../controllers/destinationsController.php';
+require_once __DIR__ . '/../controllers/destinationsController.php';
 
 //sizesController
-require __DIR__ . '/../controllers/sizesController.php';
+require_once __DIR__ . '/../controllers/sizesController.php';
 
 //shoesController
-require __DIR__ . '/../controllers/shoesController.php';
+require_once __DIR__ . '/../controllers/shoesController.php';
 
 //usersController
-require __DIR__ . '/../controllers/usersController.php';
+require_once __DIR__ . '/../controllers/usersController.php';
 
 //ordersController
-require __DIR__ . '/../controllers/ordersController.php';
+require_once __DIR__ . '/../controllers/ordersController.php';
 
 $app->run();
 
